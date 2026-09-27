@@ -219,9 +219,10 @@ full_cat = cat_model.predict(X)
 full_deep, full_uncert = deep_ens.predict(X_encoded_scaled)
 full_tab = tabnet_model.predict(X_encoded_scaled).flatten()
 full_meta = np.column_stack([full_cat, full_deep, full_tab])
-df['Predicted_Synergy'] = blender.predict(full_meta)
-top_cand = df.groupby('Terapi Adayı').agg({'Predicted_Synergy': 'mean'}).reset_index().sort_values('Predicted_Synergy', ascending=False).head(4)
-top_cand['Belirsizlik'] = df.groupby('Terapi Adayı').apply(lambda x: deep_ens.predict(X_encoded_scaled[x.index])[1].mean()).loc[top_cand['Terapi Adayı']].values
+df_temp = df.copy()
+df_temp['Predicted_Synergy'] = blender.predict(full_meta)
+top_cand = df_temp.groupby('Terapi Adayı').agg({'Predicted_Synergy': 'mean'}).reset_index().sort_values('Predicted_Synergy', ascending=False).head(4)
+top_cand['Belirsizlik'] = df_temp.groupby('Terapi Adayı').apply(lambda x: deep_ens.predict(X_encoded_scaled[x.index])[1].mean()).loc[top_cand['Terapi Adayı']].values
 top_cand['Display_Name'] = top_cand['Terapi Adayı'].apply(lambda x: str(x).replace('Combination', '').strip()[:25])
 plt.figure(figsize=(10, 6))
 ax = sns.barplot(x='Display_Name', y='Predicted_Synergy', data=top_cand, palette=['#059669', '#2563eb', '#d97706', '#64748b'], edgecolor='black')
