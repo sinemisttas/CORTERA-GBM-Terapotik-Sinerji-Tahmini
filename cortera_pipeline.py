@@ -3,7 +3,7 @@
 # Hibrit Yapay Zekâ Modeli: CatBoost + TabNet + Deep Ensemble + Ridge Meta-Model
 # ==============================================================================
 # Google Colab / Notebook ortamı için kütüphane kurulumu:
-# !pip install catboost pytorch-tabnet openpyxl plotly scikit-learn matplotlib seaborn
+!pip install catboost pytorch-tabnet openpyxl plotly scikit-learn matplotlib seaborn
 
 import pandas as pd
 import numpy as np
@@ -323,7 +323,7 @@ plt.tight_layout()
 plt.show()
 
 # GÖRSEL 11: Korelasyon Matrisi (Heatmap)
-num_df = df.select_dtypes(include=[np.number])
+num_df = df.drop(columns=['Predicted_Synergy', 'Model Tahmin Sinerjisi'], errors='ignore').select_dtypes(include=[np.number])
 top_features = num_df.corr()['Kombinasyon Sinerji Skoru'].abs().sort_values(ascending=False).index[:12]
 plt.figure(figsize=(12, 10))
 sns.heatmap(num_df[top_features].corr(), annot=True, cmap='Blues', fmt='.2f', cbar_kws={"shrink": .8}, annot_kws={"size": 10})
